@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "powerful-star-414914",
+  "private_key_id": "4302ed1ac12deb08251e9469bc3107538153bb1e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQCtPA+fF3DtZd57\nsDa3r4B360nLP7GCsKVeMuKfo7YCIJtZreq3dWOfgN6AuuNyxymYf0oD7DyMVQK/\n7JrNAkl/cPVI4G3HpQoulb8e68Ny/KLa4T35jk2mmoKlatJJMC0mIxuqBkdj9225\nSdtoPB58yDFRXAA2zcWUUqaBG7daQuuPTjwXa3CDwmC5dE4OIh4mPgbjMgsO6e+A\nyAAplX9UfM9/eoyxAt+8zdsnEiJVtZI6BfG58gKHjkFUgsVA1SWckWRzBCStTBV6\n9UUIYAIV+nmsrFw4iV2PLqbzOaVBuoJhfpdyQwZm2SU519mNZ2JfP1O/w/CxZrbk\nIqXsucNjAgMBAAECgf8s+80rCLp7AzXO0CP3jr+09lfqDcScvXLF3qGMukt8u9ZF\n7SyL/SyMDd58UgtQJDao6N6w6SEZBoBCkxWfe+xc+q7nq1+BCmZdgamlag0l5x8N\nhnvmsyV2yF9VP6TJE1f7UkcZrrh5hg+7AVpZhgYDJBFI3mo8AazSvrvrjcDR37/O\nRrB9NG6cC+5GfhGxS8b+tEWQ4IaTo+ZkANlmeW2bb6UoMY6cUX5dDeDp7mPwox9L\nLllyXA9cJzS+RULflBd5FvRb33uEc1v3oOYuULJhjuc72r6AeE/ZzWEeHtXSHK1e\njX+MPEp2CXWaWYm1/ChD7tesio6rMMF6NsUPC6ECgYEA1xqFPF8RhzQB6FQjVXxD\nWAV37Zz4N7IT6KIsfX9MK7v/qtu/o9mbaS3tYBYxevxO9hoUFVgy1gDvaiaEu31y\niB/0Ge3+25fbaQoNIeUbttKTF10iOa8r7q4Vc2ck5zU19SKwpoMiFbzZRgsVceSc\nz1BIlm+W+wdpKQt8IMq0EE0CgYEAziuzp1FU5aAQLW/KJJou741Qn++lquv3xF3h\nMD1lT506tFOp2xu8JouqvBslWbmR1N9TsZ7VPtf0USkKH8PRsgKze/ShZ04t2Qst\na2PohjKmp+EpBx/UbmCoos0XH9WF71WTOBDLvTO9bWf5yy9lfTBbu+SFMTAYtdGd\nf91qem8CgYAGS5Jmp+mdaVo88GlwUQivhMlzvMpO5vlKL6TZr2YNSZ075N6A7xdr\nRprR2xRrowK0lSLNVR13weM/2gy8Z/l4HmdIcvyodJNJSbAEs+3Rtev0HRepVIUW\noSWjkPs1gQspN3CwDtpqhHJfaGeiQ6yLLLBTJsTmZ9seBmYFl6kZaQKBgCdiE7xn\nfecrT0vOqfeZ+FNMVFVo6uWek8LQCB816y9tInSl8rFnN+bJEUFDkjv0hdX7Hzqz\n05pgmEwUodl1h44QlAaesWJRfdKTHwb/m8Be1pUFHtg8jVDUaAJJWRx8pkwUtb2k\n/7ZRtuK6VO4qTKHAZhWbTpIZ1O6Obx6oxhlDAoGBAIyZ8xDq4mKS3ija/K2BK6rS\n8Ef/PxumbN0g5s4tF/Pb0EX+6BVFJMlY7EooafhaI9GHVA/dM3eiYje/tqa+HqTF\nDaZePD4+NqEiqeZdwjeM3xG231lXLMrq8Xie1tWn2DZLOxeAaBwouTZLgDc83o3g\nPBhVUA93fJA4MXLzedsv\n-----END PRIVATE KEY-----\n",
+  "client_email": "davisgooglesheet@powerful-star-414914.iam.gserviceaccount.com",
+  "client_id": "109357797256609830258",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/davisgooglesheet%40powerful-star-414914.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

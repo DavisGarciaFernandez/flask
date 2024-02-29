@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <center><h1>Formulario</h1></center>
+        
+        <form id="myForm" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="row mt-3">
+                <div class="col-12 col-md-12">
+                    {{ form.dni.label(class="form-label") }}
+                    {{ form.dni(class="form-control") }}
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 col-md-6">
+                    {{ form.tasa_particular.label(class="form-label") }}
+                    {{ form.tasa_particular(class="form-select", id="selectA") }}
+                </div>
+                <div class="col-6 col-md-6">
+                    {{ form.comision_particular.label(class="form-label") }}
+                    {{ form.comision_particular(class="form-select", id="selectB") }}
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6 col-md-6">
+                    <div class="row">
+                        <div class="col-6 col-md-6">
+                            {{ form.monto.label(class="form-label") }}
+                            {{ form.monto(class="form-control") }}
+                        </div>
+                        <div class="col-6 col-md-6">
+                            {{ form.monto_unidad.label(class="form-label") }}
+                            {{ form.monto_unidad(class="form-select") }}
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col-3 col-md-3">
+                    {{ form.plazo.label(class="form-label") }}
+                    {{ form.plazo(class="form-control") }}
+                </div>
+                <div class="col-3 col-md-3">
+                    {{ form.esquema.label(class="form-label") }}
+                    {{ form.esquema(class="form-select", id="selectEsquema") }}
+                </div>  
+
+            </div>
+            <div class="row mt-2">
+                <div class="col-6 col-md-3">
+                    {{ form.pago_puntual.label(class="form-label") }}
+                    {{ form.pago_puntual(class="form-select") }}
+                </div>
+                
+                <div class="col-6 col-md-3">
+                    {{ form.compra_venta.label(class="form-label") }}
+                    {{ form.compra_venta(class="form-select") }}
+                </div>
+            </div>
+            <div class="row mt-2">
+
+                <div class="col-6 col-md-3">
+                    {{ form.con_hipoteca.label(class="form-label") }}
+                    {{ form.con_hipoteca(class="form-select") }}
+                </div>
+
+                <div class="col-6 col-md-3">
+                    {{ form.opcion_broker.label(class="form-label") }}
+                    {{ form.opcion_broker(class="form-select") }}    
+                </div>
+                <div class="col-6 col-md-3">
+                    {{ form.tipo_pagador.label(class="form-label") }}
+                    {{ form.tipo_pagador(class="form-select") }}    
+                </div>
+                <div class="col-6 col-md-3">
+                    {{ form.num_propiedad.label(class="form-label") }}
+                    {{ form.num_propiedad(class="form-control", id="selectNP") }}   
+                </div>
+            </div>
+            <div class="row mt-3">
+              
+                <div class="col-6 col-md-3" id="campoEsquema" style="display: none;">
+                    {{ form.cuota_mixta.label(class="form-label") }}
+                    {{ form.cuota_mixta(class="form-control") }}
+                </div>      
+            </div>
+
+            <!-- Campos adicionales que se mostrarán con AJAX -->
+            <div id="campo11" style="display: none;">
+                <div class="row mt-3">
+                    <div class="col-6 col-md-3">
+                        {{ form.tasa.label(class="form-label") }}
+                        {{ form.tasa(class="form-control") }}
+                    </div>
+                    <div class="col-6 col-md-3">
+                        {{ form.comision.label(class="form-label") }}
+                        {{ form.comision(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+            <div id="campo01" style="display: none;">
+                <div class="row mt-3">
+                    <div class="col-6 col-md-3">
+                        {{ form.comision01.label(class="form-label") }}
+                        {{ form.comision01(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+            <div id="campo10" style="display: none;">
+                <div class="row mt-3">
+                    <div class="col-6 col-md-3">
+                        {{ form.tasa10.label(class="form-label") }}
+                        {{ form.tasa10(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campos adicionales que se mostrarán con AJAX -->
+            <div id="campos-adicionales" style="display: none;">
+                <!-- Se agregarán dinámicamente los campos adicionales -->
+            </div>
+            
+
+            <div class="row mb-5">
+                {{ form.submit(class="btn btn-primary mt-5 mb-5") }}
+            </div>
+            
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#selectEsquema').change(function() {
+                var valEsquema = $('#selectEsquema').val();
+                console.log(valEsquema)
+                if (valEsquema == 2) {
+                    $('#campoEsquema').show();
+                    //$('#campo01').hide();
+                } 
+                else {
+                    $('#campoEsquema').hide();
+                }
+
+
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#selectA, #selectB').change(function() {
+                var valA = $('#selectA').val();
+                var valB = $('#selectB').val();
+                if (valA == '1' && valB == '1') {
+                    $('#campo11').show();
+                    $('#campo01').hide();
+                    $('#campo10').hide();
+                } 
+                else if (valA == '0' && valB == '1') {
+                    $('#campo01').show();
+                    $('#campo11').hide();
+                    $('#campo10').hide();
+                }
+                else if (valA == '1' && valB == '0') {
+                    $('#campo10').show();
+                    $('#campo01').hide();
+                    $('#campo11').hide();
+                }  
+                else if (valA == '0' && valB == '0'){
+                    $('#campo01').hide();
+                    $('#campo10').hide();
+                    $('#campo11').hide();
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#selectNP').change(function() {
+                var numPropiedades = $(this).val();
+                var camposAdicionales = $('#campos-adicionales');
+                camposAdicionales.empty(); // Limpiar campos adicionales existentes
+                
+                // Generar campos adicionales según el número de propiedades
+                for (var i = 0; i < numPropiedades; i++) {
+                    camposAdicionales.append(
+                        `<div class="row mt-3">
+                            <h5>Datos de la propiedad N°${i+1}:</h5>
+                            <div class="col-6 col-md-3">
+                                <label for="inputDistrito${i}" class="form-label">Distrito:</label>
+                                <select class="form-select distrito-input" id="inputDistrito${i}" name="inputDistrito${i}">
+                                    <option value="SAN ISIDRO">SAN ISIDRO</option>
+                                    <option value="MIRAFLORES">MIRAFLORES</option>
+                                    <option value="SANTIAGO DE SURCO">SANTIAGO DE SURCO</option>
+                                    <option value="SAN BORJA">SAN BORJA</option>
+                                    <option value="BARRANCO">BARRANCO</option>
+                                    <option value="CHILCA">CHILCA</option>
+                                    <option value="SAN BARTOLO">SAN BARTOLO</option>
+                                    <option value="PUNTA HERMOSA">PUNTA HERMOSA</option>
+                                    <option value="SANTA ROSA">SANTA ROSA</option>
+                                    <option value="SANTA MARIA DEL MAR">SANTA MARIA DEL MAR</option>
+                                    <option value="PUCUSANA">PUCUSANA</option>
+                                    <option value="MAGDALENA DEL MAR">MAGDALENA DEL MAR</option>
+                                    <option value="PUEBLO LIBRE">PUEBLO LIBRE</option>
+                                    <option value="LINCE">LINCE</option>
+                                    <option value="JESUS MARÍA">JESUS MARÍA</option>
+                                    <option value="SURQUILLO">SURQUILLO</option>
+                                    <option value="SAN MIGUEL">SAN MIGUEL</option>
+                                    <option value="BREÑA">BREÑA</option>
+                                    <option value="CERCADO DE LIMA">CERCADO DE LIMA</option>
+                                    <option value="LA VICTORIA">LA VICTORIA</option>
+                                    <option value="RIMAC">RIMAC</option>
+                                    <option value="SAN LUIS">SAN LUIS</option>
+                                    <option value="CARABAYLLO">CARABAYLLO</option>
+                                    <option value="COMAS">COMAS</option>
+                                    <option value="INDEPENDENCIA">INDEPENDENCIA</option>
+                                    <option value="LOS OLIVOS">LOS OLIVOS</option>
+                                    <option value="PUENTE PIEDRA">PUENTE PIEDRA</option>
+                                    <option value="SAN MARTÍN DE PORRES">SAN MARTÍN DE PORRES</option>
+                                    <option value="CHORRILLOS">CHORRILLOS</option>
+                                    <option value="LURIN">LURIN</option>
+                                    <option value="SAN JUAN DE MIRAFLORES">SAN JUAN DE MIRAFLORES</option>
+                                    <option value="VILLA EL SALVADOR">VILLA EL SALVADOR</option>
+                                    <option value="VILLA MARÍA DEL TRIUNFO">VILLA MARÍA DEL TRIUNFO</option>
+                                    <option value="PACHACAMAC">PACHACAMAC</option>
+                                    <option value="ATE">ATE</option>
+                                    <option value="CHACLACAYO">CHACLACAYO</option>
+                                    <option value="LURIGANCHO">LURIGANCHO</option>
+                                    <option value="LA MOLINA">LA MOLINA</option>
+                                    <option value="SAN JUAN DE LURIGANCHO">SAN JUAN DE LURIGANCHO</option>
+                                    <option value="SANTA ANITA">SANTA ANITA</option>
+                                    <option value="CALLAO">CALLAO</option>
+                                    <option value="VENTANILLA">VENTANILLA</option>
+                                    <option value="BELLAVISTA">BELLAVISTA</option>
+                                    <option value="LA PERLA">LA PERLA</option>
+                                    <option value="CARMEN DE LA LEGUA">CARMEN DE LA LEGUA</option>
+                                    <option value="AREQUIPA">AREQUIPA</option>
+                                    <option value="OTROS">OTROS</option>
+                                </select>
+
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="inputTipoPropiedad${i}" class="form-label">Tipo de Propiedad:</label>
+                                <select class="form-select tipo-propiedad-input" id="inputTipoPropiedad${i}" name="inputTipoPropiedad${i}">
+                                    <option value="Casa">Casa</option>
+                                    <option value="Departamento">Departamento</option>
+                                    <option value="Edificio">Edificio</option>
+                                    <option value="Terreno">Terreno</option>
+                                    <option value="Local">Local</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="inputNivelRiesgo${i}" class="form-label">Nivel de riesgo:</label>
+                                <select class="form-select NivelRiesgo-input" id="inputNivelRiesgo${i}" name="inputNivelRiesgo${i}">
+                                    <option value="Bajo">Bajo</option>
+                                    <option value="Bajo Medio">Bajo Medio</option>
+                                    <option value="Moderado">Moderado</option>
+                                    <option value="Moderado Medio">Moderado Medio</option>
+                                    <option value="Medio">Medio</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+               
+                            </div>
+                        </div>`
+                    );
+                }
+                camposAdicionales.show(); // Mostrar campos adicionales
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                fetch('/', {  // <----
+                    method: 'POST',
+                    body: new FormData(form)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message); // Show the success message
+                    window.location.href = '/mostrar-cronograma';   //<---
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+    
+</body>
+</body>
+</html>
