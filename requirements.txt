@@ -2,3 +2,8 @@ flask
 numpy
 pandas
 numpy-financial
+flask_wtf
+openpyxl
+gspread
+json
+os
