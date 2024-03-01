@@ -100,7 +100,7 @@ def operarComision():
             "VILLA EL SALVADOR": 2.03, "VILLA MARIA DEL TRIUNFO": 2.25, "PACHACAMAC": 2.48, "ATE": 1.80,
             "CHACLACAYO": 2.03, "LURIGANCHO": 2.25, "LA MOLINA": 1.80, "SAN JUAN DE LURIGANCHO": 2.25,
             "SANTA ANITA": 2.03, "CALLAO": 2.25, "VENTANILLA": 2.48, "BELLAVISTA": 2.25,
-            "LA PERLA": 2.25, "CARMEN DE LA LEGUA": 2.48, "AREQUIPA": 2.25, "OTROS": 2.25
+            "LA PERLA": 2.25, "CARMEN DE LA LEGUA": 2.48, "AREQUIPA": 2.25, "OTROS": 2.475
         }
 
     tabla_esquema = {
@@ -250,8 +250,9 @@ def operarComision():
         else:
             castigo_compra_venta = 0.00
 
-        margen_bruto = float(castigo_monto) + float(castigo_esquema) + float(castigo_distrito_riesgo_tipo_propiedad) + float(castigo_con_broker) + float(castigo_con_hipoteca) + float(castigo_tipo_pagador) + float(castigo_compra_venta)
+        castigo_vri = 0.01 * (0.33 / 0.5)
 
+        margen_bruto = float(castigo_monto) + float(castigo_esquema) + float(castigo_distrito_riesgo_tipo_propiedad) + float(castigo_con_broker) + float(castigo_con_hipoteca) + float(castigo_tipo_pagador) + float(castigo_compra_venta) + float(castigo_vri)
 
     ################################
     ################################
@@ -299,15 +300,16 @@ def operarComision():
         else:
             total_gastos = total_gastos_notariales_inscrip_lev + total_gastos_registrales_inscrip_lev + total_compra_deuda
 
-        
+        # broker
+
         # Cálculo de total_gastos_broker
-        total_gastos_broker = total_gastos + monto * castigo_con_broker
+        total_gastos_broker = total_gastos   # monto * float(castigo_con_broker)
 
         # Cálculo de gastos_operativos
-        gastos_operativos = total_gastos_broker / monto + castigo_con_hipoteca
+        gastos_operativos = total_gastos_broker / monto # + float(castigo_con_hipoteca)
 
         # Cálculo de comisión_total
-        comision_total = (math.ceil((margen_bruto + gastos_operativos) * (1 + 0.025) * 100) / 100 + 0.020) * 1.3
+        comision_total = (math.ceil((margen_bruto + gastos_operativos) * (1 + 0.025)) + 0.01) * 1.1
 
         # guardo total gastos
         datos_fondos = {
@@ -390,10 +392,10 @@ def operarTasa():
         valor_monto = monto if moneda == "Soles" else monto * 3.6
         
         if valor_monto > 100000:
-            castigo_monto = 1 + (0.018 * (valor_monto / 100000) * ((valor_monto - 20000) / 10000))
+            castigo_monto = 1 + (0.018 / (valor_monto / 100000) * ((valor_monto - 20000) / 10000))
             castigo_plazo = 1 + ((plazo - 6) / 6 * 0.008 * 2.5)
         else:
-            castigo_monto = 1 + ((valor_monto - 20000) / 10000 * 0.018)
+            castigo_monto = 1 + (((valor_monto - 20000) / 10000) * 0.018)
             castigo_plazo = 1 + ((plazo - 6) / 6 * 0.008)
         
         castigo_cuota_puente = 1 + (0.08 if cuota_puente == "Si" else 0)
@@ -406,14 +408,16 @@ def operarTasa():
 
         valor_okey = calcular_valor_okey(riesgo, tipo_deuda)
 
+        valor_vri = (0.33 / 0.05) * 0.015
+
         castigo_distrito = 1 + valor_distrito
         castigo_tipo_propiedad = 1 + valor_tipo_propiedad
         castigo_riesgo = 1 + valor_riesgo
         castigo_okey = 1 + valor_okey
-
+        castigo_vri = 1 + valor_vri
         
-        total = castigo_monto * castigo_plazo * castigo_distrito * castigo_tipo_propiedad * castigo_riesgo * castigo_okey * castigo_cuota_puente
-        tasa_final = 0.013 * 0.95 * total + 0.005 if moneda == "Soles" else  0.013 * 0.95 * total * 0.7 + 0.005
+        total = castigo_monto * castigo_plazo * castigo_distrito * castigo_tipo_propiedad * castigo_riesgo * castigo_okey * castigo_cuota_puente * castigo_vri
+        tasa_final = 0.01235 * total  if moneda == "Soles" else  0.01235 * total * 0.7 
         
         return tasa_final
 
