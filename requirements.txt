@@ -5,5 +5,4 @@ numpy-financial
 flask_wtf
 openpyxl
 gspread
-json
-os
+flask_bootstrap
