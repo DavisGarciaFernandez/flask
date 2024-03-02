@@ -178,39 +178,48 @@ def mostrar_cronograma():
     table_html2 = df2.to_html(index=False)
 
     # CRONOGRAMA P2P
-    tasa_interes_mensual = round(float(extraer_datos("tasa_final")),2)
-    ganancia_total = round(sum(extraer_datos("lista_intereses_pactados")),2)
-    total_reembolsado = round(float(extraer_datos("monto"))*(1+extraer_datos("comision_total")),2)
-    tasa_interes_nominal_anual = round(extraer_datos("tasa_final")*12,2)
-    despues_impuestos = round(0.95 * ganancia_total,2)
+    tasa_interes_mensual = float(extraer_datos("tasa_final"))
+    ganancia_total = sum(extraer_datos("lista_intereses_pactados"))
+    total_reembolsado = float(extraer_datos("monto"))*(1+extraer_datos("comision_total"))
+    tasa_interes_nominal_anual = extraer_datos("tasa_final")*12
+    despues_impuestos = 0.95 * ganancia_total
 
     flujo = extraer_datos_fondos("flujo")
-    TIR = round(npf.irr(flujo),2)
-    tea = round((tasa_interes_mensual + 1 )**12-1,2)
-    tcea = round((TIR +1)**12 -1,2)
+    TIR = round(npf.irr(flujo),4)
+    tea = round((tasa_interes_mensual + 1 )**12-1,4)
+    tcea = round((TIR +1)**12 -1,4)
 
 
     # CRONOGRAMA DE FONDOS
-    tasa_interes_mensual2 = round(float(extraer_datos_fondos("x")),2)
-    ganancia_total2 = round(sum(extraer_datos_fondos("lista_intereses_pactados")),2)
-    total_reembolsado2 = round(float(extraer_datos("monto"))*(1+float(extraer_datos("comision_total"))),2)
-    tasa_interes_nominal_anual2 = round(float(extraer_datos_fondos("x"))*12,2)
-    despues_impuestos2 = round(0.95 * ganancia_total,2)
+    tasa_interes_mensual2 = float(extraer_datos_fondos("x"))
+    ganancia_total2 = sum(extraer_datos_fondos("lista_intereses_pactados"))
+    total_reembolsado2 = float(extraer_datos("monto"))*(1+float(extraer_datos("comision_total")))
+    tasa_interes_nominal_anual2 = float(extraer_datos_fondos("x"))*12
+    despues_impuestos2 = 0.95 * ganancia_total
 
 
     flujo2 = extraer_datos_fondos("flujo2")
-    TIR2 = round(npf.irr(flujo2),2)
-    tea2 = round((tasa_interes_mensual2 + 1 )**12-1,2)
-    tcea2 = round((TIR2+1)**12 -1,2)
+    TIR2 = round(npf.irr(flujo2),4)
+    tea2 = round((tasa_interes_mensual2 + 1 )**12-1,4)
+    tcea2 = round((TIR2+1)**12 -1,4)
     
-    
+    monto_solicitado = extraer_datos("monto")
+    plazo = extraer_datos("plazo")
+    gastos_operativos_porcentaje = round(extraer_datos_fondos("gastos_operativos_porcentaje"),2)
+    gastos_operativos_numero = round(extraer_datos_fondos("gastos_operativos_numero"),2)
+    monto_total = extraer_datos_fondos("monto_total")
+
     return render_template('mostrar_cronograma.html', table=table_html, table2=table_html2, 
-                            tasa_interes_mensual=tasa_interes_mensual, ganancia_total=ganancia_total,
-                            total_reembolsado=total_reembolsado, tasa_interes_nominal_anual=tasa_interes_nominal_anual,
-                            despues_impuestos=despues_impuestos,TIR=TIR, tea=tea, tcea=tcea,
-                            tasa_interes_mensual2=tasa_interes_mensual2, ganancia_total2=ganancia_total2,
-                            total_reembolsado2=total_reembolsado2, tasa_interes_nominal_anual2=tasa_interes_nominal_anual2,
-                            despues_impuestos2=despues_impuestos2, TIR2=TIR2, tea2=tea2, tcea2=tcea2)
+                            tasa_interes_mensual=tasa_interes_mensual,
+
+                            monto_solicitado=monto_solicitado, plazo=plazo,
+                            gastos_operativos_porcentaje=gastos_operativos_porcentaje,
+                            gastos_operativos_numero=gastos_operativos_numero,
+                            monto_total=monto_total,
+                            TIR=TIR, tea=tea, tcea=tcea,
+
+                            tasa_interes_mensual2=tasa_interes_mensual2, 
+                            TIR2=TIR2, tea2=tea2, tcea2=tcea2)
 
 
 
@@ -224,7 +233,4 @@ def descargar_excel2():
 
 
 if __name__ == '__main__':
-    app.run()
-
-
-#app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
