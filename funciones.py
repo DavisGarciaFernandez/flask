@@ -133,7 +133,11 @@ def operarComision():
             400000: 0.75,
             500000: 0.60,
             750000: 0.50,
-            1000001: 0.50
+            1000001: 0.50,
+            2000001: 0.50,
+            4000001: 0.50,
+            7000001: 0.50,
+            10000001: 0.50,
         }
 
     tabla_broker_si_true = {
@@ -142,7 +146,11 @@ def operarComision():
             400000: 2.25,
             500000: 2.25,
             750000: 2.25,
-            1000001: 2.50
+            1000001: 2.50,
+            2000001: 2.75,
+            4000001: 3.00,
+            7000001: 3.00,
+            10000001: 3.00,
     }
 
     tabla_hipoteca_simultaneo = {
@@ -210,7 +218,10 @@ def operarComision():
 
         valor_distrito = tabla_distrito.get(distrito, 0.00) / 100.0
 
-        valor_riesgo = tabla_riesgo.get(riesgo, 0.00)
+        if monto > 100000:
+            valor_riesgo = tabla_riesgo.get(riesgo, 0.00) / (monto / 100000)
+        else:
+            valor_riesgo = tabla_riesgo.get(riesgo, 0.00)
 
         valor_tipo_propiedad = tabla_tipo_propiedad.get(tipo_propiedad, 0.00)
 
@@ -254,6 +265,7 @@ def operarComision():
 
         margen_bruto = float(castigo_monto) + float(castigo_esquema) + float(castigo_distrito_riesgo_tipo_propiedad) + float(castigo_con_broker) + float(castigo_con_hipoteca) + float(castigo_tipo_pagador) + float(castigo_compra_venta) + float(castigo_vri)
 
+
     ################################
     ################################
 
@@ -261,9 +273,9 @@ def operarComision():
         if con_hipoteca == "Simultaneo":
             base_calculo = (monto * (1 + margen_bruto) * 2 / 3.2) * 5
             if base_calculo > 35000:
-                total_compra_deuda = math.ceil(base_calculo / 5000) * 7.5 + 37 * num_propiedades + 300
+                total_compra_deuda = 200 + math.ceil(base_calculo / 5000) * 7.5 + 37 * num_propiedades + 300
             else:
-                total_compra_deuda = math.ceil(base_calculo / 5000) * 0.75 + 37 * num_propiedades + 300
+                total_compra_deuda = 200 + math.ceil(base_calculo / 5000) * 0.75 + 37 * num_propiedades + 300
         else:
             total_compra_deuda = 0
 
@@ -300,16 +312,16 @@ def operarComision():
         else:
             total_gastos = total_gastos_notariales_inscrip_lev + total_gastos_registrales_inscrip_lev + total_compra_deuda
 
-        # broker
-
+        
         # Cálculo de total_gastos_broker
-        total_gastos_broker = total_gastos   # monto * float(castigo_con_broker)
+        total_gastos_broker = total_gastos # + monto * castigo_con_broker
 
         # Cálculo de gastos_operativos
-        gastos_operativos = total_gastos_broker / monto # + float(castigo_con_hipoteca)
+        gastos_operativos = total_gastos_broker / monto # + castigo_con_hipoteca
 
+        
         # Cálculo de comisión_total
-        comision_total = (math.ceil((margen_bruto + gastos_operativos) * (1 + 0.025)) + 0.01) * 1.1
+        comision_total = (math.ceil((margen_bruto + gastos_operativos) * (1 + 0.025) *100) / 100 + 0.01) * 1.1
 
         # guardo total gastos
         datos_fondos = {
@@ -317,6 +329,11 @@ def operarComision():
         }
         with open('datos_fondos.json', 'w') as json_file:
             json.dump(datos_fondos, json_file, indent=4)
+
+        agregar_datos_fondos("gastos_operativos_porcentaje",gastos_operativos*100)
+        agregar_datos_fondos("gastos_operativos_numero",monto*gastos_operativos)
+        agregar_datos_fondos("monto_total",monto + monto*gastos_operativos)
+
 
         return comision_total
 
