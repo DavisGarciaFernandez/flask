@@ -321,7 +321,7 @@ def operarComision():
 
         
         # Cálculo de comisión_total
-        comision_total = (math.ceil((margen_bruto + gastos_operativos) * (1 + 0.025) *100) / 100 + 0.01) * 1.1
+        comision_total = (math.ceil((margen_bruto + gastos_operativos) * (1 + 0.025) *100) / 100 + 0.01) * 1.3
 
         # guardo total gastos
         datos_fondos = {
