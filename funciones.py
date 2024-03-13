@@ -19,6 +19,7 @@ def extraer_datos(clave):
     else:
         return False
 
+
 def extraer_datos_fondos(clave):
     if os.path.exists("datos_fondos.json"):
         with open('datos_fondos.json', 'r') as file:
@@ -78,12 +79,8 @@ def extraer_calculo_cronograma(clave):
         return data.get(clave, None) 
     else:
         return True
-# ------------------------------------------ CONVERSIONES -----------------------------------------
-def aSOLES(monto, monto_unidad):
-    if monto_unidad == "Dolares":
-        return monto*3.6, "Soles"
-    else:
-        return monto,monto_unidad
+
+
 
 # -------------------------------------- main_comision------------------------------------
 
@@ -104,10 +101,10 @@ def operarComision():
         }
 
     tabla_esquema = {
-            "Amortización mensual (Cuota fija)": 0.0023,
-            "Amortización libre (Cuota flexible)": 0.00,
-            "Cuota mixta": 0.0045,
-            "Cuota puente": 0.0045,
+            "CUOTA FIJA": 0.00225,
+            "CUOTA FLEXIBLE": 0.00,
+            "CUOTA MIXTA": 0.0045,
+            "CUOTA PUENTE": 0.0045,
         }
 
 
@@ -156,16 +153,16 @@ def operarComision():
     tabla_hipoteca_simultaneo = {
             0: 1000,
             20000: 1000,
-            25000: 977,
-            135000: 1000,
+            25000: 1000+((1500-1000)/(135000-25000))*(float(extraer_datos("monto"))-25000),
+            135000: 1500+((2000-1500)/(250000-135000)) * (float(extraer_datos("monto"))-135000),
             250001: 2000,
         }
 
     tabla_hipoteca_no_simultaneo = {
             0: 1500,
-            20000: 1500,
-            25000: 1500,
-            135000: 1500,
+            20000: 1500+((2750-1500)/(135000-20000))*(float(extraer_datos("monto"))-20000),
+            25000: 2750+((4000-2750)/(250000-135000)) * (float(extraer_datos("monto"))-135000),
+            135000: 2750+((4000-2750)/(250000-135000)) * (float(extraer_datos("monto"))-135000),
             250001: 4000
         }
 
@@ -205,14 +202,16 @@ def operarComision():
         return 0
 
 
-    def calcular_total(monto, esquema, distrito, riesgo, tipo_propiedad, con_broker, con_hipoteca, tipo_pagador, compra_venta, num_propiedades):
+    def calcular_total(monto, moneda, esquema, distrito, riesgo, tipo_propiedad, con_broker, con_hipoteca, tipo_pagador, compra_venta, num_propiedades):
+
+
         if monto > 100000:
             if monto > 600000:
                 castigo_monto = 0.00
             else:
-                castigo_monto = (600000 - monto) / 10000 * 0.00088 / 2
+                castigo_monto = ((600000 - monto) / 10000 )*( 0.00122 / 2)
         else:
-            castigo_monto = (600000 - monto) / 10000 * 0.00088
+            castigo_monto = (600000 - monto) / 10000 * 0.00122
 
         castigo_esquema = tabla_esquema.get(esquema, 0.00)
 
@@ -256,22 +255,26 @@ def operarComision():
             castigo_tipo_pagador = 0.00
 
         # Cálculo para castigo_compra_venta
-        if compra_venta == "Si":
+        if compra_venta == "S\u00ed":
             castigo_compra_venta = 1000 / monto
         else:
             castigo_compra_venta = 0.00
 
-        castigo_vri = 0.01 * (0.33 / 0.5)
+        castigo_vri = 0.01 * (0.40 / 0.5)
 
         margen_bruto = float(castigo_monto) + float(castigo_esquema) + float(castigo_distrito_riesgo_tipo_propiedad) + float(castigo_con_broker) + float(castigo_con_hipoteca) + float(castigo_tipo_pagador) + float(castigo_compra_venta) + float(castigo_vri)
 
 
     ################################
-    ################################
+        
+        def redondear_mas(numero, decimales):
+            factor = 10 ** decimales
+            return math.ceil(numero * factor) / factor
+
 
         # Cálculo de Total Compra de deuda
         if con_hipoteca == "Simultaneo":
-            base_calculo = (monto * (1 + margen_bruto) * 2 / 3.2) * 5
+            base_calculo = (monto * (1 + redondear_mas((redondear_mas((margen_bruto) * (1 + 0.025), 2) + 0.01) * 1.1, 2)) * 2 / 3.2) * 5
             if base_calculo > 35000:
                 total_compra_deuda = 200 + math.ceil(base_calculo / 5000) * 7.5 + 37 * num_propiedades + 300
             else:
@@ -281,32 +284,32 @@ def operarComision():
 
 
         # Cálculo de Total Gastos registrales (Inscrip+Lev)
-        base_calculo_gr = (monto * (1 + margen_bruto) * 2 / 3.2) * 5
+        base_calculo_gr = (monto * (1 + redondear_mas((redondear_mas((margen_bruto) * (1 + 0.025), 2) + 0.01) * 1.1, 2)) * 2 / 3.2) * 5
         if base_calculo_gr > 35000:
-            total_gastos_registrales_inscrip_lev = 2 * (math.ceil(base_calculo_gr / 5000) * 7.5 + 37 * num_propiedades) + 600
+            total_gastos_registrales_inscrip_lev = 2 * (math.ceil(math.ceil(base_calculo_gr / 5000) * 7.5) + 37 * num_propiedades) + 600
         else:
-            total_gastos_registrales_inscrip_lev = 2 * (math.ceil(base_calculo_gr / 5000) * 0.75 + 37 * num_propiedades) + 600
-        total_gastos_registrales_inscrip_lev = round(total_gastos_registrales_inscrip_lev)
+            total_gastos_registrales_inscrip_lev = 2 * (math.ceil(math.ceil(base_calculo_gr / 5000) * 0.75) + 37 * num_propiedades) + 600
+        #total_gastos_registrales_inscrip_lev = round(total_gastos_registrales_inscrip_lev)
 
 
         # Cálculo de Total Gastos registrales (C-V+Hipo)
-        base_calculo_gastos_cv_hipo = (((monto * (1 + margen_bruto) / num_propiedades) * 2 / 3.2) * 5) * 3 / 1000
-        total_gastos_registrales_cv_hipo = math.ceil(base_calculo_gastos_cv_hipo) * num_propiedades + 40 * num_propiedades
+        base_calculo_gastos_cv_hipo = (((monto * (1 + redondear_mas((redondear_mas((margen_bruto) * (1 + 0.025), 2) + 0.01) * 1.1, 2)) / num_propiedades) * 2 / 3.2) * 5) * 3 / 1000
+        total_gastos_registrales_cv_hipo = redondear_mas(base_calculo_gastos_cv_hipo, 0) * num_propiedades + 40 * num_propiedades
 
 
         # Cálculo de Total Gastos Notariales (C-V+Hipo)
-        monto_ajustado = ((monto * (1 + margen_bruto) / num_propiedades) * 2 / 3.2) * num_propiedades
+        monto_ajustado = ((monto * (1 + redondear_mas((redondear_mas((margen_bruto) * (1 + 0.025), 2) + 0.01) * 1.1, 2)) / num_propiedades) * 2 / 3.2) * num_propiedades
         valor_base = buscar_valor_en_tabla(monto_ajustado, tabla10)
         total_gastos_notariales_cv_hipo = valor_base + 300 + 100 + (10 * 1.18) + (48 * 1.18 * num_propiedades)
 
 
         # Cálculo de Total Gastos Notariales (Inscrip+Lev)
-        monto_ajustado = (monto * (1 + margen_bruto)) * 2 / 3.2
+        monto_ajustado = (monto * (1 + redondear_mas((redondear_mas((margen_bruto) * (1 + 0.025), 2) + 0.01) * 1.1, 2))) * 2 / 3.2
         gastos_notariales_hipoteca = buscar_gasto_notarial(monto_ajustado, tabla20)
         total_gastos_notariales_inscrip_lev = gastos_notariales_hipoteca + 200 + 100 + 50 * (num_propiedades ** 2) + 11.8
 
 
-        if compra_venta.lower() == "Si":
+        if compra_venta == "S\u00ed":
             total_gastos = (total_gastos_notariales_cv_hipo + total_gastos_registrales_cv_hipo +
                             total_gastos_registrales_inscrip_lev + total_compra_deuda)
         else:
@@ -321,7 +324,7 @@ def operarComision():
 
         
         # Cálculo de comisión_total
-        comision_total = (math.ceil((margen_bruto + gastos_operativos) * (1 + 0.025) *100) / 100 + 0.01) * 1.3
+        comision_total = redondear_mas(redondear_mas((redondear_mas((margen_bruto + gastos_operativos) * (1 + 0.025) *100, 2) / 100 + 0.01) * 1.1, 2) * 1.3, 2)
 
         # guardo total gastos
         datos_fondos = {
@@ -333,11 +336,34 @@ def operarComision():
         agregar_datos_fondos("gastos_operativos_porcentaje",gastos_operativos*100)
         agregar_datos_fondos("gastos_operativos_numero",monto*gastos_operativos)
         agregar_datos_fondos("monto_total",monto + monto*gastos_operativos)
+    
 
+        datos_castigo_comision = {
+            "castigo monto": castigo_monto,
+            "castigo esquema": castigo_esquema,
+            "castigo distrito":castigo_distrito_riesgo_tipo_propiedad,
+            "castigo broker":castigo_con_broker,
+            "castigo hipoteca":castigo_con_hipoteca,
+            "castigo tipo pagador":castigo_tipo_pagador,
+            "castigo compra venta":castigo_compra_venta,
+            "castigo vri":castigo_vri,
+            "margen bruto": margen_bruto,
+            "total gastos":total_gastos,
+            "gastos notariales":total_gastos_notariales_cv_hipo,
+            "total gastos registrales":total_gastos_registrales_cv_hipo,
+            "total gastos registrales inscrip lev":total_gastos_registrales_inscrip_lev,
+            "total compra deuda": total_compra_deuda,
+            "total gastos notariables inscrip lev": total_gastos_notariales_inscrip_lev,
+            "total gastos broker":total_gastos_broker,
+            "gastos operativos":gastos_operativos
+        }
+        with open('datos_castigo_comision.json', 'w') as json_file:
+            json.dump(datos_castigo_comision, json_file, indent=4)
 
         return comision_total
 
     monto = float(extraer_datos("monto"))
+    moneda = extraer_datos("monto_unidad")
     esquema = extraer_datos("esquema")
     distrito = extraer_datos("lista_distritos")[0]
     riesgo = extraer_datos("lista_niveles_riesgos")[0]
@@ -347,7 +373,7 @@ def operarComision():
     con_hipoteca = extraer_datos("con_hipoteca")
     num_propiedades = extraer_datos("nro_propiedades")
     con_broker = extraer_datos("opcion_broker")
-    comision_total = calcular_total(monto, esquema, distrito, riesgo, tipo_propiedad, con_broker, con_hipoteca, tipo_pagador, compra_venta, num_propiedades)
+    comision_total = calcular_total(monto, moneda, esquema, distrito, riesgo, tipo_propiedad, con_broker, con_hipoteca, tipo_pagador, compra_venta, num_propiedades)
 
     calculo_comision = {
         "comision_total":comision_total
@@ -425,7 +451,7 @@ def operarTasa():
 
         valor_okey = calcular_valor_okey(riesgo, tipo_deuda)
 
-        valor_vri = (0.33 / 0.05) * 0.015
+        valor_vri = (0.4 / 0.05) * 0.015
 
         castigo_distrito = 1 + valor_distrito
         castigo_tipo_propiedad = 1 + valor_tipo_propiedad
@@ -434,8 +460,24 @@ def operarTasa():
         castigo_vri = 1 + valor_vri
         
         total = castigo_monto * castigo_plazo * castigo_distrito * castigo_tipo_propiedad * castigo_riesgo * castigo_okey * castigo_cuota_puente * castigo_vri
-        tasa_final = 0.01235 * total  if moneda == "Soles" else  0.01235 * total * 0.7 
         
+        tasa_final = round(0.01235 * total,4)  if moneda == "Soles" else  round(0.01235 * total * 0.7, 4) 
+      
+      
+        datos_castigo_tasa = {
+            "castigo_monto": castigo_monto,
+            "castigo_plazo":castigo_plazo,
+            "castigo_distrito":castigo_distrito,
+            "castigo_tipo propiedad":castigo_tipo_propiedad,
+            "castigo_riesgo":castigo_riesgo,
+            "castigo_okey":castigo_okey,
+            "castigo_cuota puente":castigo_cuota_puente,
+            "castigo_vri":castigo_vri
+        }
+        with open('datos_castigo_tasa.json', 'w') as json_file:
+            json.dump(datos_castigo_tasa, json_file, indent=4)
+
+
         return tasa_final
 
     moneda = extraer_datos("monto_unidad")
@@ -459,7 +501,6 @@ def operarTasa():
         json.dump(calculo_tasa, json_file, indent=4)
 
 
-
 # ------------------------------------ main_cronograma -------------------------------------
 def operarCronograma():
     monto = extraer_datos('monto')
@@ -479,7 +520,8 @@ def operarCronograma():
 
 
 
-def obtener_cuota_mensual(monto,plazo,valor_comision,valor_tasa,tipo_cronograma):
+def obtener_cuota_mensual(monto, moneda, plazo,valor_comision,valor_tasa,tipo_cronograma):
+
     monto_total = np.round(monto * (1 + valor_comision), 2)
 
     if tipo_cronograma == "CUOTA FLEXIBLE":
@@ -490,9 +532,6 @@ def obtener_cuota_mensual(monto,plazo,valor_comision,valor_tasa,tipo_cronograma)
         cuota_mensual = 0.00
 
     return cuota_mensual,monto_total
-
-
-
 
 
 # --------------------------------------------------------- Generar Excel --------------------------------------------
@@ -524,8 +563,12 @@ def generar_excel2(cronograma_data, nombre_archivo):
     workbook.save(nombre_archivo)
 
 
-def calcular_cronograma(monto, plazo, valor_comision, valor_tasa, tipo_cronograma):
+def calcular_cronograma(monto, moneda, plazo, valor_comision, valor_tasa, tipo_cronograma):
+    
+
     monto_total = np.round(monto * (1 + valor_comision), 2)
+    
+
     saldo = monto_total
 
     lista_fecha_pago = []
@@ -585,12 +628,19 @@ def calcular_cronograma(monto, plazo, valor_comision, valor_tasa, tipo_cronogram
     flujo[-1] = lista_monto_reembolsar[-1]-lista_amortizacion[-1]
 
     agregar_datos_fondos("flujo",flujo)
+    agregar_datos_fondos("lista_cuota_mensual",lista_cuota_mensual)
+    agregar_datos_fondos("lista_fecha_pago",lista_fecha_pago)
+
+
 
     return lista_fecha_pago, lista_monto_reembolsar, lista_intereses_pactados, lista_amortizacion, lista_cuota_mensual
 
 
-def calcular_cronograma2(monto, plazo, valor_comision, valor_tasa, tipo_cronograma):
+def calcular_cronograma2(monto, moneda, plazo, valor_comision, valor_tasa, tipo_cronograma):
+
+
     monto_total = np.round(monto * (1 + valor_comision), 2)
+
     saldo = monto_total
 
     total_gastos = extraer_datos_fondos("total_gastos")
@@ -598,17 +648,19 @@ def calcular_cronograma2(monto, plazo, valor_comision, valor_tasa, tipo_cronogra
     saldo_final = float(extraer_datos_fondos("ultimo_monto_reembolsar")) - float(extraer_datos_fondos("ultimo_amortizacion"))
 
 
-    lista_fecha_pago = calcular_cronograma(monto, plazo, valor_comision, valor_tasa, tipo_cronograma)[0]
+    lista_fecha_pago = extraer_datos_fondos("lista_fecha_pago")
     lista_monto_reembolsar = [monto + total_gastos] # Inicializa con monto_total como primer valor
     lista_intereses_pactados = []
     lista_amortizacion = []
     
-    lista_cuota_mensual = calcular_cronograma(monto, plazo, valor_comision, valor_tasa, tipo_cronograma)[4]
+    lista_cuota_mensual = extraer_datos_fondos("lista_cuota_mensual")
+
+
 
     p = float(extraer_datos("plazo"))
     E = monto + total_gastos
-    M = float(extraer_datos_fondos("cuota_mensual"))
-    Y = calcular_cronograma(monto, plazo, valor_comision, valor_tasa, tipo_cronograma)[4][-1]
+    M = float(extraer_datos_fondos("cuota_mensual"))   # 735.4
+    Y = extraer_datos_fondos("lista_cuota_mensual")[-1]
 
     def equation(X):
         suma_serie = sum((X + 1) ** i for i in range(plazo - 1))
@@ -624,7 +676,7 @@ def calcular_cronograma2(monto, plazo, valor_comision, valor_tasa, tipo_cronogra
 
     for i in range(int(p)):
         lista_intereses_pactados.append(x*lista_monto_reembolsar[i])
-        lista_amortizacion.append(M-lista_intereses_pactados[i])
+        lista_amortizacion.append(M-lista_intereses_pactados[i]) # 735.4 - 569.89
         lista_monto_reembolsar.append(lista_monto_reembolsar[i]-lista_amortizacion[i])
 
     lista_monto_reembolsar.remove(lista_monto_reembolsar[-1])
@@ -656,7 +708,10 @@ def calcular_cronograma2(monto, plazo, valor_comision, valor_tasa, tipo_cronogra
     for i,e in enumerate(lista_cuota_mensual):
         lista_cuota_mensual[i]=round(e,2)
 
+    lista_amortizacion[-1] = lista_cuota_mensual[-1]-lista_intereses_pactados[-1]
+
     return lista_fecha_pago, lista_monto_reembolsar, lista_intereses_pactados, lista_amortizacion, lista_cuota_mensual
+
 
 
 def enviardatos():
