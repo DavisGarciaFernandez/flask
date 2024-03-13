@@ -26,11 +26,35 @@
 
         <div class="row">
             <div class="col-md-6">
-                <div class="row"><p>Monto Solicitado: {{monto_solicitado}}</p></div>
-                <div class="row"><p>Plazo: {{plazo}}</p></div>
+                <div class="row">
+                    <p>
+                        {% if monto_unidad == "Soles" %}
+                            Monto Solicitado: S/.{{monto_solicitado}} 
+                        {% elif monto_unidad == "Dolares" %}
+                            Monto Solicitado: {{monto_solicitado}} $
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="row"><p>Plazo: {{plazo}} meses</p></div>
                 <div class="row"><p>Gastos operativos: {{gastos_operativos_porcentaje}} %</p></div>
-                <div class="row"><p>Gastos operativos: {{gastos_operativos_numero}}</p></div>
-                <div class="row"><p>Monto total: {{monto_total}}</p></div>
+                <div class="row">
+                    <p>
+                        {% if monto_unidad == "Soles" %}
+                            Gastos operativos: S/.{{gastos_operativos_numero}}
+                        {% elif monto_unidad == "Dolares" %}
+                            Gastos operativos:{{gastos_operativos_numero}} $
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="row">
+                    <p>
+                        {% if monto_unidad == "Soles" %}
+                            Monto total: S/.{{monto_total}}
+                        {% elif monto_unidad == "Dolares" %}
+                            Monto total: {{monto_total}} $
+                        {% endif %}
+                    </p>
+                </div>
                 <div class="row"><p>Tasa de interes mensual: {{ "{:.2f}".format(tasa_interes_mensual*100) }}%</p></div>
                 <div class="row"><p>TIR: {{ "{:.2f}".format(TIR*100) }}%</p></div>
                 <div class="row"><p>tea: {{ "{:.2f}".format(tea*100) }}%</p></div>
@@ -38,11 +62,35 @@
                 <center><a href="/descargar-excel" class="btn btn-primary">Descargar Excel</a></center>
             </div>
             <div class="col-md-6">
-                <div class="row"><p>Monto Solicitado: {{monto_solicitado}}</p></div>
-                <div class="row"><p>Plazo: {{plazo}}</p></div>
+                <div class="row">
+                    <p>
+                        {% if monto_unidad == "Soles" %}
+                            Monto Solicitado: S/.{{monto_solicitado}} 
+                        {% elif monto_unidad == "Dolares" %}
+                            Monto Solicitado: {{monto_solicitado}} $
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="row"><p>Plazo: {{plazo}} meses</p></div>
                 <div class="row"><p>Gastos operativos: {{gastos_operativos_porcentaje}} %</p></div>
-                <div class="row"><p>Gastos operativos: {{gastos_operativos_numero}}</p></div>
-                <div class="row"><p>Monto total: {{monto_total}}</p></div>
+                <div class="row">
+                    <p>
+                        {% if monto_unidad == "Soles" %}
+                            Gastos operativos: S/.{{gastos_operativos_numero}}
+                        {% elif monto_unidad == "Dolares" %}
+                            Gastos operativos:{{gastos_operativos_numero}} $
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="row">
+                    <p>
+                        {% if monto_unidad == "Soles" %}
+                            Monto total: S/.{{monto_total}}
+                        {% elif monto_unidad == "Dolares" %}
+                            Monto total: {{monto_total}} $
+                        {% endif %}
+                    </p>
+                </div>
                 <div class="row"><p>Tasa de interes mensual: {{ "{:.2f}".format(tasa_interes_mensual2*100) }}%</p></div>
                 <div class="row"><p>TIR: {{ "{:.2f}".format(TIR2*100) }}%</p></div>
                 <div class="row"><p>tea: {{ "{:.2f}".format(tea2*100) }}%</p></div>
