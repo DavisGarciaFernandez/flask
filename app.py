@@ -146,16 +146,17 @@ def index():
 @app.route('/mostrar-cronograma')
 def mostrar_cronograma():
     monto = float(extraer_datos("monto"))
+    monto_unidad = extraer_datos("monto_unidad")
     plazo = int(extraer_datos("plazo"))
     valor_comision = extraer_calculo_comision("comision_total")
     valor_tasa = extraer_calculo_tasa("tasa_final")
     esquema = extraer_datos("esquema")
 
- 
-    lista_fecha_pago, lista_monto_reembolsar, lista_intereses_pactados, lista_amortizacion, lista_cuota_mensual = calcular_cronograma(monto, plazo, valor_comision, valor_tasa, esquema)
-    lista_fecha_pago2, lista_monto_reembolsar2, lista_intereses_pactados2, lista_amortizacion2, lista_cuota_mensual2 = calcular_cronograma2(monto, plazo, valor_comision, valor_tasa, esquema)
-    generar_excel(calcular_cronograma(monto, plazo, valor_comision, valor_tasa, esquema), "cronograma_p2p.xlsx")
-    generar_excel2(calcular_cronograma2(monto, plazo, valor_comision, valor_tasa, esquema), "cronograma_fondos.xlsx")
+    
+    lista_fecha_pago, lista_monto_reembolsar, lista_intereses_pactados, lista_amortizacion, lista_cuota_mensual = calcular_cronograma(monto, monto_unidad, plazo, valor_comision, valor_tasa, esquema)
+    lista_fecha_pago2, lista_monto_reembolsar2, lista_intereses_pactados2, lista_amortizacion2, lista_cuota_mensual2 = calcular_cronograma2(monto, monto_unidad, plazo, valor_comision, valor_tasa, esquema)
+    generar_excel(calcular_cronograma(monto, monto_unidad, plazo, valor_comision, valor_tasa, esquema), "cronograma_p2p.xlsx")
+    generar_excel2(calcular_cronograma2(monto, monto_unidad ,plazo, valor_comision, valor_tasa, esquema), "cronograma_fondos.xlsx")
     # Crear un DataFrame con los datos
     data = {
         'Fecha de Pago': lista_fecha_pago,
@@ -212,7 +213,9 @@ def mostrar_cronograma():
     return render_template('mostrar_cronograma.html', table=table_html, table2=table_html2, 
                             tasa_interes_mensual=tasa_interes_mensual,
 
-                            monto_solicitado=monto_solicitado, plazo=plazo,
+                            monto_solicitado=monto_solicitado, 
+                            monto_unidad=monto_unidad,
+                            plazo=plazo,
                             gastos_operativos_porcentaje=gastos_operativos_porcentaje,
                             gastos_operativos_numero=gastos_operativos_numero,
                             monto_total=monto_total,
