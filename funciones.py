@@ -215,7 +215,7 @@ def operarComision():
 
         castigo_esquema = tabla_esquema.get(esquema, 0.00)
 
-        valor_distrito = tabla_distrito.get(distrito, 0.00) / 100.0
+        valor_distrito = tabla_distrito.get(distrito, 0.00) / 100
 
         if monto > 100000:
             valor_riesgo = tabla_riesgo.get(riesgo, 0.00) / (monto / 100000)
@@ -324,7 +324,7 @@ def operarComision():
 
         
         # Cálculo de comisión_total
-        comision_total = redondear_mas(redondear_mas((redondear_mas((margen_bruto + gastos_operativos) * (1 + 0.025) *100, 2) / 100 + 0.01) * 1.1, 2) * 1.3, 2)
+        comision_total = redondear_mas(redondear_mas((redondear_mas((margen_bruto + gastos_operativos) * (1 + 0.025) * 100, 2) / 100 + 0.015) * 1.1, 2) * 1.3, 2)
 
         # guardo total gastos
         datos_fondos = {
@@ -443,7 +443,7 @@ def operarTasa():
         
         castigo_cuota_puente = 1 + (0.08 if cuota_puente == "Si" else 0)
         
-        valor_distrito = buscar_valor(distrito, tabla_distrito) / 100
+        valor_distrito = buscar_valor(distrito, tabla_distrito) / 100.00
 
         valor_tipo_propiedad = buscar_valor(tipo_propiedad, tabla_tipo_propiedad)
 
@@ -461,7 +461,7 @@ def operarTasa():
         
         total = castigo_monto * castigo_plazo * castigo_distrito * castigo_tipo_propiedad * castigo_riesgo * castigo_okey * castigo_cuota_puente * castigo_vri
         
-        tasa_final = round(0.01235 * total,4)  if moneda == "Soles" else  round(0.01235 * total * 0.7, 4) 
+        tasa_final = round(0.01235 * total, 4)  if moneda == "Soles" else  round(0.01235 * total * 0.82, 4) 
       
       
         datos_castigo_tasa = {
