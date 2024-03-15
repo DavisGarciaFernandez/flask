@@ -1,0 +1,19 @@
+{
+    "castigo monto": 0.061,
+    "castigo esquema": 0.00225,
+    "castigo distrito": 0.0,
+    "castigo broker": 0,
+    "castigo hipoteca": 0.0,
+    "castigo tipo pagador": 0.003,
+    "castigo compra venta": 0.0,
+    "castigo vri": 0.008,
+    "margen bruto": 0.07425000000000001,
+    "total gastos": 2521.8,
+    "gastos notariales": 1568.44,
+    "total gastos registrales": 1072.0,
+    "total gastos registrales inscrip lev": 1710,
+    "total compra deuda": 0,
+    "total gastos notariables inscrip lev": 811.8,
+    "total gastos broker": 2521.8,
+    "gastos operativos": 0.025218
+}
