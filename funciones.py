@@ -462,11 +462,7 @@ def operarTasa():
         
         total = castigo_monto * castigo_plazo * castigo_distrito * castigo_tipo_propiedad * castigo_riesgo * castigo_okey * castigo_cuota_puente * castigo_vri
         
-<<<<<<< HEAD
         tasa_final = round(0.01235 * total, 4)  if moneda == "Soles" else  round(0.01235 * total * 0.70, 4) 
-=======
-        tasa_final = round(0.01235 * total, 4)  if moneda == "Soles" else  round(0.01235 * total * 0.82, 4) 
->>>>>>> 401de1fe754be33b8c050ee84e398dcb6e645466
       
       
         datos_castigo_tasa = {
