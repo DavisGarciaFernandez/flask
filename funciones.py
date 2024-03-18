@@ -215,7 +215,7 @@ def operarComision():
 
         castigo_esquema = tabla_esquema.get(esquema, 0.00)
 
-        valor_distrito = tabla_distrito.get(distrito, 0.00) / 100.0
+        valor_distrito = tabla_distrito.get(distrito, 0.00) / 100
 
         if monto > 100000:
             valor_riesgo = tabla_riesgo.get(riesgo, 0.00) / (monto / 100000)
@@ -324,7 +324,7 @@ def operarComision():
 
         
         # Cálculo de comisión_total
-        comision_total = redondear_mas(redondear_mas((redondear_mas((margen_bruto + gastos_operativos) * (1 + 0.025) *100, 2) / 100 + 0.01) * 1.1, 2) * 1.3, 2)
+        comision_total = redondear_mas(redondear_mas((redondear_mas((margen_bruto + gastos_operativos) * (1 + 0.025) * 100, 2) / 100 + 0.015) * 1.1, 2) * 1.3, 2)
 
         # guardo total gastos
         datos_fondos = {
@@ -373,6 +373,7 @@ def operarComision():
     con_hipoteca = extraer_datos("con_hipoteca")
     num_propiedades = extraer_datos("nro_propiedades")
     con_broker = extraer_datos("opcion_broker")
+    if moneda == "Dolares": monto = 3.6*monto
     comision_total = calcular_total(monto, moneda, esquema, distrito, riesgo, tipo_propiedad, con_broker, con_hipoteca, tipo_pagador, compra_venta, num_propiedades)
 
     calculo_comision = {
@@ -443,11 +444,11 @@ def operarTasa():
         
         castigo_cuota_puente = 1 + (0.08 if cuota_puente == "Si" else 0)
         
-        valor_distrito = buscar_valor(distrito, tabla_distrito) / 100
+        valor_distrito = buscar_valor(distrito, tabla_distrito) / 100.00
 
         valor_tipo_propiedad = buscar_valor(tipo_propiedad, tabla_tipo_propiedad)
 
-        valor_riesgo = calcular_valor_riesgo(monto, riesgo)
+        valor_riesgo = calcular_valor_riesgo(valor_monto, riesgo)
 
         valor_okey = calcular_valor_okey(riesgo, tipo_deuda)
 
@@ -461,7 +462,7 @@ def operarTasa():
         
         total = castigo_monto * castigo_plazo * castigo_distrito * castigo_tipo_propiedad * castigo_riesgo * castigo_okey * castigo_cuota_puente * castigo_vri
         
-        tasa_final = round(0.01235 * total,4)  if moneda == "Soles" else  round(0.01235 * total * 0.7, 4) 
+        tasa_final = round(0.01235 * total, 4)  if moneda == "Soles" else  round(0.01235 * total * 0.70, 4) 
       
       
         datos_castigo_tasa = {
@@ -472,7 +473,8 @@ def operarTasa():
             "castigo_riesgo":castigo_riesgo,
             "castigo_okey":castigo_okey,
             "castigo_cuota puente":castigo_cuota_puente,
-            "castigo_vri":castigo_vri
+            "castigo_vri":castigo_vri,
+            "total":total
         }
         with open('datos_castigo_tasa.json', 'w') as json_file:
             json.dump(datos_castigo_tasa, json_file, indent=4)
