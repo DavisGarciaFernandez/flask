@@ -26,7 +26,7 @@ class MyForm(FlaskForm):
     monto = StringField('Monto:')
     monto_unidad = SelectField('Moneda:', choices=monto_unidades)
     esquema = SelectField('Esquema:', choices=esquemas)
-    pago_puntual = SelectField('¿Pago puntual?:', choices=pagos_puntuales)
+    #pago_puntual = SelectField('¿Pago puntual?:', choices=pagos_puntuales)
     compra_venta = SelectField('¿Operación compra venta?:', choices=compras_ventas)
     con_hipoteca = SelectField('¿Con hipoteca?:', choices=con_hipotecas)
     opcion_broker = SelectField('¿Tiene Broker?:', choices=opciones_brokers)
@@ -82,7 +82,7 @@ def index():
         monto = form.monto.data
         monto_unidad = numeroATexto_MontoUnidades(form.monto_unidad.data)
         esquema = numeroATexto_Esquema(form.esquema.data)
-        pago_puntual = numeroATexto_PagoPuntual(form.pago_puntual.data)
+        #pago_puntual = numeroATexto_PagoPuntual(form.pago_puntual.data)
         compra_venta = numeroATexto_CompraVenta(form.compra_venta.data)
         con_hipoteca = numeroATexto_Hipoteca(form.con_hipoteca.data)
         opcion_broker = numeroATexto_OpcionBroker(form.opcion_broker.data)
@@ -111,7 +111,7 @@ def index():
             "monto" : form.monto.data,
             "monto_unidad" : numeroATexto_MontoUnidades(form.monto_unidad.data),
             "esquema" : numeroATexto_Esquema(form.esquema.data),
-            "pago_puntual" : numeroATexto_PagoPuntual(form.pago_puntual.data),
+            #"pago_puntual" : numeroATexto_PagoPuntual(form.pago_puntual.data),
             "compra_venta" : numeroATexto_CompraVenta(form.compra_venta.data),
             "con_hipoteca" : numeroATexto_Hipoteca(form.con_hipoteca.data),
             "opcion_broker" : numeroATexto_OpcionBroker(form.opcion_broker.data),
@@ -178,12 +178,20 @@ def mostrar_cronograma():
     table_html = df.to_html(index=False)
     table_html2 = df2.to_html(index=False)
 
+
+    monto_solicitado = float(extraer_datos("monto"))
+    plazo = extraer_datos("plazo")
+
     # CRONOGRAMA P2P
     tasa_interes_mensual = float(extraer_datos("tasa_final"))
     ganancia_total = sum(extraer_datos("lista_intereses_pactados"))
     total_reembolsado = float(extraer_datos("monto"))*(1+extraer_datos("comision_total"))
     tasa_interes_nominal_anual = extraer_datos("tasa_final")*12
     despues_impuestos = 0.95 * ganancia_total
+
+    gastos_operativos_porcentaje = round(extraer_calculo_comision("comision_total"),2)
+    gastos_operativos_numero = round(gastos_operativos_porcentaje * monto_solicitado,2)
+    monto_total = gastos_operativos_numero + monto_solicitado
 
     flujo = extraer_datos_fondos("flujo")
     TIR = round(npf.irr(flujo),4)
@@ -198,17 +206,17 @@ def mostrar_cronograma():
     tasa_interes_nominal_anual2 = float(extraer_datos_fondos("x"))*12
     despues_impuestos2 = 0.95 * ganancia_total
 
+    gastos_operativos_porcentaje2 = round(extraer_datos_fondos("gastos_operativos_porcentaje"),2)
+    gastos_operativos_numero2 = round(extraer_datos_fondos("gastos_operativos_numero"),2)
+    monto_total2 = extraer_datos_fondos("monto_total")
 
     flujo2 = extraer_datos_fondos("flujo2")
     TIR2 = round(npf.irr(flujo2),4)
     tea2 = round((tasa_interes_mensual2 + 1 )**12-1,4)
     tcea2 = round((TIR2+1)**12 -1,4)
     
-    monto_solicitado = extraer_datos("monto")
-    plazo = extraer_datos("plazo")
-    gastos_operativos_porcentaje = round(extraer_datos_fondos("gastos_operativos_porcentaje"),2)
-    gastos_operativos_numero = round(extraer_datos_fondos("gastos_operativos_numero"),2)
-    monto_total = extraer_datos_fondos("monto_total")
+    
+    
 
     return render_template('mostrar_cronograma.html', table=table_html, table2=table_html2, 
                             tasa_interes_mensual=tasa_interes_mensual,
@@ -220,7 +228,10 @@ def mostrar_cronograma():
                             gastos_operativos_numero=gastos_operativos_numero,
                             monto_total=monto_total,
                             TIR=TIR, tea=tea, tcea=tcea,
-
+                            
+                            gastos_operativos_porcentaje2=gastos_operativos_porcentaje2,
+                            gastos_operativos_numero2=gastos_operativos_numero2,
+                            monto_total2=monto_total2,
                             tasa_interes_mensual2=tasa_interes_mensual2, 
                             TIR2=TIR2, tea2=tea2, tcea2=tcea2)
 
