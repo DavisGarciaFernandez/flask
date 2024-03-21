@@ -82,7 +82,7 @@ def extraer_calculo_cronograma(clave):
 
 
 
-# -------------------------------------- main_comision------------------------------------
+# -------------------------------------- main_comision ------------------------------------
 
 def operarComision():
     tabla_distrito = {
@@ -736,4 +736,3 @@ def obtener_fecha_actual():
     fecha_actual = datetime.datetime.now()
     fecha_formateada = fecha_actual.strftime("%d/%m/%Y %H:%M:%S")
     return fecha_formateada
-
